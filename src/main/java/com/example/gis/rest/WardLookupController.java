@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class WardLookupController {
 
     /**
-     * British National Grid
+     * British National Grid Extent
      */
     private static final int MAX_EASTING_METERS = 700000;
     private static final int MAX_NORTHING_METERS = 1300000;
@@ -35,6 +35,7 @@ public class WardLookupController {
     public String administrativeWardForBuilding(
             @Min(0) @Max(MAX_EASTING_METERS) Integer easting,
             @Min(0) @Max(MAX_NORTHING_METERS) Integer northing) {
+
         BritishGridPoint point = new BritishGridPoint(easting, northing);
         return lookupService.findWardsForBuilding(point);
     }

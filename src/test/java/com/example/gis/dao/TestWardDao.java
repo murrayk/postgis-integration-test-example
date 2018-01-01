@@ -3,10 +3,7 @@ package com.example.gis.dao;
 
 import com.example.gis.model.BritishGridPoint;
 import org.flywaydb.core.Flyway;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -51,7 +48,15 @@ public class TestWardDao {
 
         List<String> result = wardDao.findWardsForBuilding(pointInPentlandsWard);
         Assert.assertEquals("point in pentlands ward", "Pentland Hills", result.get(0));
+
+        BritishGridPoint pointOutsideUrbanArea = new BritishGridPoint(0,0);
+
+        List<String> emptyResult = wardDao.findWardsForBuilding(pointOutsideUrbanArea);
+        Assert.assertTrue("point not in ward",  emptyResult.isEmpty());
+
     }
+
+
 
 
     DataSource postGisDocker() {

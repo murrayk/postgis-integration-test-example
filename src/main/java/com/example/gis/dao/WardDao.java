@@ -1,6 +1,7 @@
 package com.example.gis.dao;
 
 import com.example.gis.model.BritishGridPoint;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
