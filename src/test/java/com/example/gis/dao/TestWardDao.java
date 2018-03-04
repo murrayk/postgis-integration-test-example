@@ -19,10 +19,8 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 public class TestWardDao {
 
-
     @Rule
     public PostgreSQLContainer postgres = new PostgreSQLContainer("mdillon/postgis:9.5");
-
 
     @Value(value = "classpath:/db/sql/test-fixture.sql")
     private Resource testFixtureResource;
@@ -33,14 +31,10 @@ public class TestWardDao {
     public void setup() throws SQLException {
 
         flywayCreateFreshSchema();
-
         areasTestFixture();
+        wardDao = new WardDao(postGisDocker());
 
-        wardDao = new WardDao();
-        wardDao.setDataSource(postGisDocker());
     }
-
-
 
     @Test
     public void testFindWardOfBuilding(){
@@ -56,9 +50,6 @@ public class TestWardDao {
 
     }
 
-
-
-
     DataSource postGisDocker() {
         return DataSourceBuilder
                 .create()
@@ -69,9 +60,7 @@ public class TestWardDao {
                 .build();
 
     }
-
-
-
+    
     private void areasTestFixture() throws SQLException {
         ScriptUtils.executeSqlScript(postGisDocker().getConnection(), testFixtureResource);
     }
