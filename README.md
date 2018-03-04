@@ -78,13 +78,17 @@ You can then spin a the exact same database as production in a consistent state 
 
 ### Analysis of the Dao Test
 
-```java {.line-numbers}
+```java 
 @RunWith(SpringRunner.class)
 public class TestWardDao {
-
+```
+>> Test containers uses a junit rule to create the docker container to use. This is where we specify our postgis docker image tag. 
+```java
     @Rule
     public PostgreSQLContainer postgres = new PostgreSQLContainer("mdillon/postgis:9.5");
-
+```
+>> We can use a test fixture to load in our base polygons for consistency in the test-fixtures.sql
+```java
     @Value(value = "classpath:/db/sql/test-fixture.sql")
     private Resource testFixtureResource;
 
@@ -105,7 +109,9 @@ public class TestWardDao {
         Assert.assertEquals("point in pentlands ward", "Pentland Hills", result.get(0));
 
     }
-
+```
+>> Create a data source for our DAO from our docker container that was created using the junit rule
+```java  
     DataSource postGisDocker() {
         return DataSourceBuilder
                 .create()
@@ -116,16 +122,24 @@ public class TestWardDao {
                 .build();
 
     }
-
+```
+>> Load the areas test fixture 
+```java  
     private void areasTestFixture() throws SQLException {
         ScriptUtils.executeSqlScript(postGisDocker().getConnection(), testFixtureResource);
     }
+```
+>> Using the main project flyway scripts for testing. 
 
+>>This recreates the  database schema from scratch for each test.
+It is clear at all times what state a database is in and is the same version you are using in production.
+```java    
     private void flywayCreateFreshSchema() {
         Flyway flyway = new Flyway();
         flyway.setDataSource(postGisDocker());
         flyway.setSchemas("areas");
         flyway.migrate();
     }
-}
+}    
 ```
+
